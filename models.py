@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 """models.py
 
@@ -68,11 +68,11 @@ class ConferenceForm(messages.Message):
     organizerUserId = messages.StringField(3)
     topics          = messages.StringField(4, repeated=True)
     city            = messages.StringField(5)
-    startDate       = messages.StringField(6) #DateTimeField()
+    startDate       = messages.StringField(6) # DateTimeField()
     month           = messages.IntegerField(7)
     maxAttendees    = messages.IntegerField(8)
     seatsAvailable  = messages.IntegerField(9)
-    endDate         = messages.StringField(10) #DateTimeField()
+    endDate         = messages.StringField(10) # DateTimeField()
     websafeKey      = messages.StringField(11)
     organizerDisplayName = messages.StringField(12)
 
@@ -122,8 +122,8 @@ class Session(ndb.Model):
     date = ndb.DateProperty()
     start_time = ndb.TimeProperty()
 
-    #One-to-many relationship with conferences
-    #Each session is associated with a conference.
+    # one-to-many relationship with conferences
+    # each session is associated with a conference.
     conference = ndb.KeyProperty(kind = Conference)
 
 class SessionForm(messages.Message):
@@ -133,8 +133,8 @@ class SessionForm(messages.Message):
     speaker              = messages.StringField(3)
     duration             = messages.FloatField(4)
     typeOfSession        = messages.StringField(5)
-    date                 = messages.StringField(6) #DateProperty()
-    start_time           = messages.StringField(7) #TimeProperty()
+    date                 = messages.StringField(6) # DateProperty()
+    start_time           = messages.StringField(7) # TimeProperty()
     websafeConferenceKey = messages.StringField(8)
 
 class SessionForms(messages.Message):
@@ -171,7 +171,7 @@ class SessionWishList(ndb.Model):
 
 class SessionWishListForm(messages.Message):
     userID = messages.StringField(1)
-    #Duplicate code here? This looks a lot like SessionForms class
+    # duplicate code here? This looks a lot like SessionForms class
     wishlistSessions = messages.MessageField(SessionForm, 2, repeated=True)
 
 class ChangeWishList(messages.Message):

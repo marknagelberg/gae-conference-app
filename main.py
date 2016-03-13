@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 """
 main.py -- Udacity conference server-side Python App Engine
@@ -56,7 +56,7 @@ class SendFeaturedSpeakerUpdate(webapp2.RequestHandler):
                 ndb.Key(urlsafe = websafeConferenceKey) == Session.conference)
         if len(q.fetch()) > 1:
             featured_key = websafeConferenceKey
-            #Add new memcache entry that features speaker and session names
+            # add new memcache entry that features speaker and session names
             featured_speaker = FEATURED_SPEAKER_MESSAGE % (speaker, ','.join([sesh.name for sesh in q]))
             memcache.set(featured_key, featured_speaker)
 

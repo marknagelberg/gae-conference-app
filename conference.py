@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 """
 conference.py -- Udacity conference server-side Python App Engine API;
@@ -273,7 +273,7 @@ class ConferenceApi(remote.Service):
         q = Conference.query()
         inequality_filter, filters = self._formatFilters(request.filters)
 
-        # If exists, sort on inequality filter first
+        # if exists, sort on inequality filter first
         if not inequality_filter:
             q = q.order(Conference.name)
         else:
@@ -302,7 +302,7 @@ class ConferenceApi(remote.Service):
             except KeyError:
                 raise endpoints.BadRequestException("Filter contains invalid field or operator.")
 
-            # Every operation except "=" is an inequality
+            # every operation except "=" is an inequality
             if filtr["operator"] != "=":
                 # check if inequality operation has been used in previous filters
                 # disallow the filter if inequality was performed on a different field before
@@ -394,10 +394,6 @@ class ConferenceApi(remote.Service):
                     val = getattr(save_request, field)
                     if val:
                         setattr(prof, field, str(val))
-                        #if field == 'teeShirtSize':
-                        #    setattr(prof, field, str(val).upper())
-                        #else:
-                        #    setattr(prof, field, val)
                         prof.put()
 
         # return ProfileForm
@@ -431,7 +427,7 @@ class ConferenceApi(remote.Service):
         ).fetch(projection=[Conference.name])
 
         if confs:
-            # If there are almost sold out conferences,
+            # if there are almost sold out conferences,
             # format announcement and set it in memcache
             announcement = ANNOUNCEMENT_TPL % (
                 ', '.join(conf.name for conf in confs))
@@ -571,7 +567,7 @@ class SessionApi(remote.Service):
         sesh = SessionForm()
         for field in sesh.all_fields():
             if hasattr(session, field.name):
-                #Convert dates and times to strings, copy others
+                # convert dates and times to strings, copy others
                 if field.name.endswith('date') or field.name.endswith('start_time'):
                     setattr(sesh, field.name, str(getattr(session, field.name)))
                 else:
@@ -597,7 +593,7 @@ class SessionApi(remote.Service):
             raise endpoints.NotFoundException(
                 'No conference found with key: %s' % request.websafeConferenceKey)
 
-        #Check to make sure user is conference owner.
+        # check to make sure user is conference owner.
         if user_id != conf.organizerUserId:
             raise endpoints.ForbiddenException('Only the conference creator can add sessions')
 
@@ -609,7 +605,7 @@ class SessionApi(remote.Service):
         # convert dates from strings to Date objects; set month based on start_date
         if data['date']:
             data['date'] = datetime.strptime(data['date'][:10], "%Y-%m-%d").date()
-        # Convert start time from strings to time object (24 hour clock)
+        # convert start time from strings to time object (24 hour clock)
         if data['start_time']:
             data['start_time'] = datetime.strptime(data['start_time'][:5], "%H:%M").time()
 
@@ -745,7 +741,6 @@ class SessionApi(remote.Service):
         sesh = SessionWishListForm()
         sesh.userID = session_wishlist.userID
         sesh.wishlistSessions = [self._copySessionToForm(session.get()) for session in session_wishlist.wishlistSessions]
-        #what does line below do?
         sesh.check_initialized()
         return sesh
 
@@ -760,9 +755,9 @@ class SessionApi(remote.Service):
             raise endpoints.UnauthorizedException('Authorization required')
         user_id = getUserId(user)
 
-        #Need to check to make sure session key refers to actual session,
-        #also want to check that the user is registered for the relevant
-        #conference.
+        # need to check to make sure session key refers to actual session,
+        # also want to check that the user is registered for the relevant
+        # conference.
         sesh = ndb.Key(urlsafe = request.sessionKey)
         sesh_key = sesh.get()
 
@@ -779,7 +774,7 @@ class SessionApi(remote.Service):
 
         sesh_query = ndb.Key(SessionWishList, user_id).get()
         if not sesh_query:
-            #Make UserID the key
+            # make UserID the key
             new_sesh = SessionWishList(userID = user_id, wishlistSessions = [sesh])
             new_sesh.key = ndb.Key(SessionWishList, new_sesh.userID)
             new_sesh.put()
@@ -819,9 +814,9 @@ class SessionApi(remote.Service):
             raise endpoints.UnauthorizedException('Authorization required')
         user_id = getUserId(user)
 
-        #Need to check to make sure session key refers to actual session,
-        #also want to check that the user is registered for the relevant
-        #conference.
+        # need to check to make sure session key refers to actual session,
+        # also want to check that the user is registered for the relevant
+        # conference.
         sesh = ndb.Key(urlsafe = request.sessionKey)
         sesh_key = sesh.get()
 
