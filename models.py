@@ -152,7 +152,7 @@ class SessionNotTypeBeforeTimeForm(messages.Message):
     """SessionNotTypeBeforeTimeForm -- Session type and
        time filter inbound form message"""
     notType = messages.StringField(1)
-    beforeTime = messages.IntegerField(2)
+    beforeTime = messages.StringField(2)
     websafeConferenceKey = messages.StringField(3)
 
 class SessionSpeakerFilterForm(messages.Message):

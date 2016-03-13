@@ -16,6 +16,7 @@ __author__ = 'wesc+api@google.com (Wesley Chun)'
 from datetime import datetime
 from sets import Set
 import logging
+import re
 
 import endpoints
 from protorpc import messages
@@ -97,6 +98,7 @@ CONF_POST_REQUEST = endpoints.ResourceContainer(
     websafeConferenceKey=messages.StringField(1),
 )
 
+START_TIME_RE = re.compile('[0-9][0-9]:[0-9][0-9]')
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -607,7 +609,12 @@ class SessionApi(remote.Service):
             data['date'] = datetime.strptime(data['date'][:10], "%Y-%m-%d").date()
         # convert start time from strings to time object (24 hour clock)
         if data['start_time']:
-            data['start_time'] = datetime.strptime(data['start_time'][:5], "%H:%M").time()
+            user_time = data['start_time']
+            if not START_TIME_RE.match(user_time):
+                raise endpoints.BadRequestException("Session start time must take the form ##:## and represent a 24 hour clock!")
+            elif int(user_time[0:2]) > 23 or int(user_time[3:5]) > 59:
+                raise endpoints.BadRequestException("Session start time must take the form ##:## and represent a 24 hour clock!")
+            data['start_time'] = datetime.strptime(user_time, "%H:%M").time()
 
         # create Session
         Session(**data).put()
@@ -682,8 +689,12 @@ class SessionApi(remote.Service):
 
         not_equals_sessions = Set([sesh.key for sesh in not_equals_type_query])
 
+        if not START_TIME_RE.match(request.beforeTime):
+            raise endpoints.BadRequestException("Session start time must take the form ##:## and represent a 24 hour clock!")
+
+        request_time = datetime.strptime(request.beforeTime, "%H:%M").time()
         before_time_query = Session.query()
-        before_time_query = before_time_query.filter(Session.conference==conf.key, Session.start_time <= request.beforeTime)
+        before_time_query = before_time_query.filter(Session.conference==conf.key, Session.start_time <= request_time)
         before_time_sessions = Set([sesh.key for sesh in before_time_query])
 
         sessions_to_return = [x.get() for x in before_time_sessions & not_equals_sessions]
